@@ -33,6 +33,11 @@ body {
   margin-bottom: 0;
 }
 
+.sign-in, .sign-in:visited, .sign-in:hover, .sign-in:active {
+  color: inherit;
+  text-decoration: none;
+}
+
 .input-container {
   height: 50px;
   position: relative;
@@ -59,20 +64,25 @@ body {
 
 
 input[type=file]::file-selector-button {
-  border: 2px solid #6c5ce7;
+  /* border: 2px solid #6c5ce7; */
+  border : 2px #eee;
   padding: .2em .4em;
   border-radius: .2em;
-  background-color: #a29bfe;
+  /* background-color: #a29bfe; */
+  background-color: #c99609;
   transition: 1s;
 }
 
 input[type=file]::file-selector-button:hover {
-  background-color: #08d;
+  /* background-color: #08d; */
+  background-color: #eee;
+  color: #000;
   border: 2px solid #eee;
 }
 
 .submit {
-  background-color: #08d;
+  /* background-color: #08d; */
+  background-color: #c99609;
   border-radius: 12px;
   border: 0;
   box-sizing: border-box;

@@ -17,34 +17,10 @@
       <!-- Custom CSS -->
       <link rel="stylesheet" href="/styles.css">
 
-
-  <script>
-    function showAudioPlayer() {
-      var audioContainer = document.querySelector('.audio-container');
-      audioContainer.style.display = 'block';
-    }
-  </script>
 </head>
-  
-<body>
-    <div class="form">
-      <form action="/" method="post"  enctype="multipart/form-data">
-        <div class="title">The Singularity</div>
-        <div class="subtitle">Let the images speak !</div>
-        <div class="input-container ic2">
-                <label for="file-upload" class="custom-file-upload"></label>
-                <input class="input" type="file" accept="image/*" id="myFile" name="imageFile">
-        </div>
-        <button type="submit" class="submit">Submit</button>
-      </form>
-      <button type="" class="submit "><a class="sign-in" href="https://the-singularity.auth.ap-south-1.amazoncognito.com/logout?client_id=2heq5muc0nie555oecngoel5a0&logout_uri=http://localhost:8080/login">Sign Out</a> </button>
-      </div>
 
-      <div class="audio-container">
-        <audio controls>
-          <source src="" id="audioSource">
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-</body>
+<div class="form">
+    <button type="text" class="submit "><a class="sign-in" href="https://the-singularity.auth.ap-south-1.amazoncognito.com/login?client_id=2heq5muc0nie555oecngoel5a0&response_type=code&scope=email+openid+phone&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2F">Sign In</a> </button>
+</div>
+
 </html>

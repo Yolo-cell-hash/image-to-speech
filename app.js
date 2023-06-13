@@ -6,16 +6,40 @@ const path = require('path');
 const fs = require('fs');
 
 const { Storage } = require('@google-cloud/storage');
-const storage = new Storage();
 const bucketName = 'image_to_speech_file_storage';
 
 const app = express();
+const storage = new Storage();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 const timestamp = Date.now();
 const upload = multer({ dest: 'uploads/' });
+
+app.get('/login', function (req, res) {
+  res.render('login');
+});
+
+
+app.get('/logout', function (req, res) {
+  res.render('logout');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.get('/', function (req, res) {
   res.render('home');
