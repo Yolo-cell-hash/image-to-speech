@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>File Upload Form</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../images/angel.png">
+
+      <!-- Font-Awesome Script -->
+      <script src="https://kit.fontawesome.com/5f0c0be05e.js" crossorigin="anonymous"></script>
+      <!-- Bootstrap CDN -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      
+      <!-- Custom CSS -->
+      <link rel="stylesheet" href="/styles.css">
+
+
+  <script>
+    function showAudioPlayer() {
+      var audioContainer = document.querySelector('.audio-container');
+      audioContainer.style.display = 'block';
+    }
+  </script>
+</head>
+  
+<body>
+    <div class="form">
+      <form action="/" method="post"  enctype="multipart/form-data">
+        <div class="title">The Singularity</div>
+        <div class="subtitle">Let the images speak !</div>
+        <div class="input-container ic2">
+                <label for="file-upload" class="custom-file-upload"></label>
+                <input class="input" type="file" accept="image/*" id="myFile" name="imageFile">
+        </div>
+        <button type="submit" class="submit">Submit</button>
+      </form>
+      </div>
+
+      <div class="audio-container">
+        <audio controls>
+          <source src="" id="audioSource">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+</body>
+</html>
