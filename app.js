@@ -17,14 +17,11 @@ app.use(express.static('public'));
 const timestamp = Date.now();
 const upload = multer({ dest: 'uploads/' });
 
-app.get('/login', function (req, res) {
+app.get('/', function (req, res) {
   res.render('login');
 });
 
 
-app.get('/logout', function (req, res) {
-  res.render('logout');
-});
 
 
 
@@ -39,13 +36,11 @@ app.get('/logout', function (req, res) {
 
 
 
-
-
-app.get('/', function (req, res) {
+app.get('/app', function (req, res) {
   res.render('home');
 });
 
-app.post('/', upload.single('imageFile'), (req, res) => {
+app.post('/app', upload.single('imageFile'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No image file provided' });
   }
