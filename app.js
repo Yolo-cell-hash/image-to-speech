@@ -92,13 +92,13 @@ app.post('/app', upload.single('imageFile'), (req, res) => {
                 console.log('Local image file deleted successfully');
               }
             });
-            res.redirect('/');
+            res.redirect('/app');
           });
         });
       } catch (err) {
         console.error('Error uploading image:', err);
         return false;
-        res.redirect('/');
+        res.redirect('/app');
       }
     }
 
