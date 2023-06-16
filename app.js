@@ -6,18 +6,19 @@ const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
 require('dotenv').config();
-
+const { v4: uuidv4 } = require('uuid');
 
 const bucketName = process.env.bucketName;
 const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
+
+const fileName = 'uploaded_image.png';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-const timestamp = Date.now();
 const upload = multer({ dest: 'uploads/' });
 
 app.get('/', function (req, res) {
@@ -28,13 +29,12 @@ app.get('/app', function (req, res) {
   res.render('home');
 });
 
-app.post('/app', upload.single('imageFile'), (req, res) => {
+app.post('/app', upload.single('imageFile'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No image file provided' });
   }
 
   const imageFile = req.file;
-  const fileName = 'uploaded_image.png';
   const filePath = path.join(__dirname, 'uploads', fileName);
 
   fs.rename(imageFile.path, filePath, async (err) => {
@@ -54,13 +54,13 @@ app.post('/app', upload.single('imageFile'), (req, res) => {
 
     const params = {
       Bucket: bucketName,
-      Key: `image_${timestamp}.png`,
+      Key: `image_${uuidv4()}.png`,
       Body: fs.createReadStream(filePath),
       ACL: 'public-read',
       ContentType: 'image/png',
     };
 
-    s3.upload(params, (err, data) => {
+    s3.upload(params, async (err, data) => {
       if (err) {
         console.error('Error uploading image:', err);
         return res.status(500).json({ error: 'Failed to upload image' });
@@ -78,6 +78,7 @@ app.post('/app', upload.single('imageFile'), (req, res) => {
     });
   });
 });
+
 
 let port = process.env.PORT || 8080;
 app.listen(port, function () {
