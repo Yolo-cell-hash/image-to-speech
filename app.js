@@ -7,6 +7,11 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
+const Replicate = require('replicate');
+const { log } = require('console');
+
+
+
 
 const bucketName = process.env.bucketName;
 const accessKeyId = process.env.accessKeyId;
