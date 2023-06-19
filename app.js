@@ -11,8 +11,6 @@ const Replicate = require('replicate');
 const { log } = require('console');
 
 
-
-
 const bucketName = process.env.bucketName;
 const accessKeyId = process.env.accessKeyId;
 const secretAccessKey = process.env.secretAccessKey;
@@ -57,21 +55,44 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
 
     const s3 = new AWS.S3();
 
-    const params = {
-      Bucket: bucketName,
+    const bucket1Params = {
+      Bucket: process.env.bucketName,
       Key: `image_${uuidv4()}.png`,
       Body: fs.createReadStream(filePath),
       ACL: 'public-read',
       ContentType: 'image/png',
     };
 
-    s3.upload(params, async (err, data) => {
-      if (err) {
-        console.error('Error uploading image:', err);
-        return res.status(500).json({ error: 'Failed to upload image' });
-      }
+    const bucket2Params = {
+      Bucket: process.env.bucketBackup,
+      Key: `image_${uuidv4()}.png`,
+      Body: fs.createReadStream(filePath),
+      ACL: 'public-read',
+      ContentType: 'image/png',
+    };
 
-      console.log('Image uploaded successfully!');
+    const uploadToBucket = (params) => {
+      return new Promise((resolve, reject) => {
+        s3.upload(params, (err, data) => {
+          if (err) {
+            console.error('Error uploading image:', err);
+            reject(err);
+          } else {
+            console.log('Image uploaded successfully!', data.Location);
+            resolve();
+          }
+        });
+      });
+    };
+
+    try {
+      await Promise.all([
+        uploadToBucket(bucket1Params),
+        uploadToBucket(bucket2Params),
+      ]);
+
+      console.log('Image uploaded to both buckets successfully!');
+
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Error deleting local image file:', err);
@@ -79,8 +100,12 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
           console.log('Local image file deleted successfully');
         }
       });
+
       res.redirect('/app');
-    });
+    } catch (err) {
+      console.error('Failed to upload image to one or more buckets:', err);
+      return res.status(500).json({ error: 'Failed to upload image' });
+    }
   });
 });
 

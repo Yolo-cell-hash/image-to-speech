@@ -17,6 +17,8 @@
       <!-- Custom CSS -->
       <link rel="stylesheet" href="/styles.css">
 
+      <!-- CAPTCHA Code -->
+      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   <script>
     function showAudioPlayer() {
@@ -28,7 +30,7 @@
   
 <body>
     <div class="form">
-      <form action="/app" method="post"  enctype="multipart/form-data">
+      <form id="image-form" action="/app" method="post"  enctype="multipart/form-data">
         <div class="title">The Singularity</div>
         <div class="subtitle">Let the images speak !</div>
         <div class="input-container ic2">
@@ -46,5 +48,8 @@
           Your browser does not support the audio element.
         </audio>
       </div>
+
+      <script>
+      </script>
 </body>
 </html>
