@@ -42,12 +42,8 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
 
   fs.rename(imageFile.path, filePath, async (err) => {
     if (err) {
-      console.error('Error saving image file', err);
       return res.status(500).json({ error: 'Failed to save image' });
     }
-
-    console.log('Image saved locally successfully');
-
     AWS.config.update({
       accessKeyId: accessKeyId,
       secretAccessKey: secretAccessKey,
@@ -75,7 +71,6 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
       return new Promise((resolve, reject) => {
         s3.upload(params, (err, data) => {
           if (err) {
-            console.error('Error uploading image:', err);
             reject(err);
           } else {
             console.log('Image uploaded successfully!', data.Location);
@@ -90,14 +85,9 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
         uploadToBucket(bucket1Params),
         uploadToBucket(bucket2Params),
       ]);
-
-      console.log('Image uploaded to both buckets successfully!');
-
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error('Error deleting local image file:', err);
-        } else {
-          console.log('Local image file deleted successfully');
         }
       });
 
