@@ -1,4 +1,5 @@
 body {
+  margin: 0;
   align-items: center;
   background-color: #000;
   display: flex;
@@ -169,10 +170,46 @@ audio::-webkit-media-controls-panel{
 
 
 
-@media(max-width: 767px) {
-  .form{
-    height: 2000px;
-    width:100px;
-  }
+@media (max-width:1125px)  {
+  
+  .main{
+    font-size: 1rem;
+    min-width: 60%;
+    min-height: 400px;
+    padding-top: 50px;
+    padding-bottom: 60px;
+    }
 
+    .logo_app{
+      height: 45%;
+      width: 45%;
+      text-align: center;
+      margin: 1.2rem 0; 
+    }
+
+    .mob{
+      margin-left: 10rem;
+    }
+
+    .pad{
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .big{
+      min-height: 400px;
+    }
+
+
+    .data {
+      margin-top: 5rem;  
+      margin-left: 0;
+        max-height: 800px;
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px)
+{
+  
 }
