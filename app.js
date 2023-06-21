@@ -2,34 +2,53 @@ const express = require('express');
 const ejs = require('ejs');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const AWS = require('aws-sdk');
-require('dotenv').config();
 const { v4: uuidv4 } = require('uuid');
-const Replicate = require('replicate');
-const { log } = require('console');
 
-
-const bucketName = process.env.bucketName;
-const accessKeyId = process.env.accessKeyId;
-const secretAccessKey = process.env.secretAccessKey;
-
-const fileName = 'uploaded_image.png';
+const bucketName = 'file-store-bucket-for-image-text-app';
+const bucketBackup = 'file-store-bucket-backup';
+const audioBucket = 'audio-file-from-polly';
+const accessKeyId = 'AKIAQHWFNWM36VAG4TOS';
+const secretAccessKey = '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';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer();
+
+AWS.config.update({
+  accessKeyId: accessKeyId,
+  secretAccessKey: secretAccessKey,
+});
+
+const s3 = new AWS.S3();
+
+const waitForAudioFile = async (audioKey) => {
+  const params = {
+    Bucket: audioBucket,
+    Prefix: audioKey,
+  };
+
+  while (true) {
+    try {
+      const data = await s3.listObjectsV2(params).promise();
+      const audioFile = data.Contents.find(file => file.Key.endsWith('.mp3'));
+      if (audioFile) {
+        console.log('Audio file found!');
+        return;
+      }
+    } catch (error) {
+      console.log('Audio file not found yet...');
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+};
 
 app.get('/', function (req, res) {
   res.render('login');
-});
-
-app.get('/app', function (req, res) {
-  res.render('home');
 });
 
 app.post('/app', upload.single('imageFile'), async (req, res) => {
@@ -38,69 +57,68 @@ app.post('/app', upload.single('imageFile'), async (req, res) => {
   }
 
   const imageFile = req.file;
-  const filePath = path.join(__dirname, 'uploads', fileName);
 
-  fs.rename(imageFile.path, filePath, async (err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Failed to save image' });
-    }
-    AWS.config.update({
-      accessKeyId: accessKeyId,
-      secretAccessKey: secretAccessKey,
-    });
+  const bucket1Params = {
+    Bucket: bucketName,
+    Key: `image_${uuidv4()}.png`,
+    Body: imageFile.buffer,
+    ACL: 'public-read',
+    ContentType: 'image/png',
+  };
 
-    const s3 = new AWS.S3();
+  const bucket2Params = {
+    Bucket: bucketBackup,
+    Key: `image_${uuidv4()}.png`,
+    Body: imageFile.buffer,
+    ACL: 'public-read',
+    ContentType: 'image/png',
+  };
 
-    const bucket1Params = {
-      Bucket: process.env.bucketName,
-      Key: `image_${uuidv4()}.png`,
-      Body: fs.createReadStream(filePath),
-      ACL: 'public-read',
-      ContentType: 'image/png',
-    };
-
-    const bucket2Params = {
-      Bucket: process.env.bucketBackup,
-      Key: `image_${uuidv4()}.png`,
-      Body: fs.createReadStream(filePath),
-      ACL: 'public-read',
-      ContentType: 'image/png',
-    };
-
-    const uploadToBucket = (params) => {
-      return new Promise((resolve, reject) => {
-        s3.upload(params, (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            console.log('Image uploaded successfully!', data.Location);
-            resolve();
-          }
-        });
-      });
-    };
-
-    try {
-      await Promise.all([
-        uploadToBucket(bucket1Params),
-        uploadToBucket(bucket2Params),
-      ]);
-      fs.unlink(filePath, (err) => {
+  const uploadToBucket = (params) => {
+    return new Promise((resolve, reject) => {
+      s3.upload(params, (err, data) => {
         if (err) {
-          console.error('Error deleting local image file:', err);
+          reject(err);
+        } else {
+          console.log('Image uploaded successfully!');
+          resolve();
         }
       });
+    });
+  };
 
-      res.redirect('/app');
-    } catch (err) {
-      console.error('Failed to upload image to one or more buckets:', err);
-      return res.status(500).json({ error: 'Failed to upload image' });
-    }
-  });
+  try {
+    await Promise.all([
+      uploadToBucket(bucket1Params),
+      uploadToBucket(bucket2Params),
+    ]);
+
+    const imageURL = `https://${bucketName}.s3.ap-south-1.amazonaws.com/${bucket1Params.Key}`;
+
+    const imageKey = bucket1Params.Key.replace(/\.[^/.]+$/, '');
+    const audioKey = imageKey;
+
+    await waitForAudioFile(audioKey);
+
+    const audioFileName = `${audioKey}_merged.mp3`;
+    const audioURL = `https://${audioBucket}.s3.ap-south-1.amazonaws.com/${audioFileName}`;
+
+    res.redirect(`/app?audioURL=${encodeURIComponent(audioURL)}&imageURL=${encodeURIComponent(imageURL)}`);
+  } catch (err) {
+    console.error('Failed to upload image or retrieve audio:', err);
+    return res.status(500).json({ error: 'Failed to upload image or retrieve audio' });
+  }
 });
 
+app.get('/app', function (req, res) {
+  var audioURL = req.query.audioURL || '';
+  var imageURL = req.query.imageURL || '';
+  res.render('home', { audioURL, imageURL });
+  audioURL = '';
+  imageURL = '';
+});
 
 let port = process.env.PORT || 8080;
 app.listen(port, function () {
-  console.log('Server activated at port successfully');
+  console.log('Server activated successfully');
 });

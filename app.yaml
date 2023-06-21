@@ -2,6 +2,3 @@ runtime: nodejs16 # or another supported version
 # vm: true
 env: standard
 instance_class: F1
-
-includes:
-  - env_variables.yaml

@@ -5,51 +5,59 @@
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="../images/black-hole.png">
 
-
-      <!-- Font-Awesome Script -->
-      <script src="https://kit.fontawesome.com/5f0c0be05e.js" crossorigin="anonymous"></script>
-      <!-- Bootstrap CDN -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <!-- Font-Awesome Script -->
+  <script src="https://kit.fontawesome.com/5f0c0be05e.js" crossorigin="anonymous"></script>
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
       
-      <!-- Custom CSS -->
-      <link rel="stylesheet" href="/styles.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/styles.css">
 
-      <!-- CAPTCHA Code -->
-      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
-  <script>
-    function showAudioPlayer() {
-      var audioContainer = document.querySelector('.audio-container');
-      audioContainer.style.display = 'block';
-    }
-  </script>
 </head>
-  
 <body>
-    <div class="form">
-      <form id="image-form" action="/app" method="post"  enctype="multipart/form-data">
-        <div class="title">The Singularity</div>
-        <div class="subtitle">Let the images speak !</div>
-        <div class="input-container ic2">
-                <label for="file-upload" class="custom-file-upload"></label>
-                <input class="input" type="file" accept="image/*" id="myFile" name="imageFile">
+  <div class="container">
+    <div class="row">
+      <% if (imageURL || audioURL) { %>
+      <div class=" col-md-4 col-sm-12">
+      <% } else { %>
+      <div class=" col-md-4 col-sm-12 offset-md-4">
+      <% } %>
+      <div class="form">
+        <form id="image-form" action="/app" method="post" enctype="multipart/form-data">
+          <div class="title">The Singularity</div>
+          <div class="subtitle">Let your images speak!</div>
+          <div class="input-container ic2">
+            <label for="file-upload" class="custom-file-upload"></label>
+            <input class="input" type="file" accept="image/*" id="myFile" name="imageFile">
+          </div>
+          <button type="submit" class="submit">Submit</button>
+          <button class="submit sign-out"><a class="sign-in" href="https://the-singularity.auth.ap-south-1.amazoncognito.com/logout?client_id=2u2cfb2grhk99k8v8grl08srpp&logout_uri=http://localhost:8080">Sign Out</a></button>
+        </form>
+      </div>
+      </div>
+      <div class=" col-md-6 col-sm-12">
+        <div class="data">
+        <div class="image-field">
+        <% if (imageURL) { %>
+        <!-- Display the uploaded image  <%= imageURL %>-->
+        <img class="displayed-image" src="https://file-store-bucket-for-image-text-app.s3.ap-south-1.amazonaws.com/image_07384321-ea81-4bdc-a659-6883702e4d3e.png" alt="Uploaded Image">
+        <% } %>
+      </div>
+        <% if (audioURL) { %>
+        <!-- Audio player -->
+        <div class="audio-player">
+          <audio controls>
+            <source src="<%= audioURL %>" type="audio/mpeg">
+            Your browser does not support the audio tag.
+          </audio>
         </div>
-        <button type="submit" class="submit">Submit</button>
-      </form>
-      <button class="submit"><a class="sign-in" href="https://the-singularity.auth.ap-south-1.amazoncognito.com/logout?client_id=2u2cfb2grhk99k8v8grl08srpp&logout_uri=https://tensile-splice-389810.el.r.appspot.com/">Sign Out</a> </button>
+        <% } %>
+        </div>
       </div>
-
-      <div class="audio-container">
-        <audio controls>
-          <source src="" id="audioSource">
-          Your browser does not support the audio element.
-        </audio>
-      </div>
-
-      <script>
-      </script>
+    </div>
+  </div>
 </body>
 </html>
