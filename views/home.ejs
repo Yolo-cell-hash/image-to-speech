@@ -39,11 +39,11 @@
       </div>
       </div>
       <div class=" col-md-6 col-sm-12">
-        <div class="data">
-        <div class="image-field">
         <% if (imageURL) { %>
-        <!-- Display the uploaded image  <%= imageURL %>-->
-        <img class="displayed-image" src="https://file-store-bucket-for-image-text-app.s3.ap-south-1.amazonaws.com/image_07384321-ea81-4bdc-a659-6883702e4d3e.png" alt="Uploaded Image">
+          <div class="data">
+            <div class="image-field">
+        <!-- Display the uploaded image  -->
+        <img class="displayed-image" src="<%= imageURL %>" alt="Uploaded Image">
         <% } %>
       </div>
         <% if (audioURL) { %>
